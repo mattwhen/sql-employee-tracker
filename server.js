@@ -34,11 +34,8 @@ function init() {
       // Do a query based on the user selection
       switch(res.options) {
         case 'View all departments':
-          db.query('SELECT * from department;', (err, result) => {
-            if (err) {
-                console.log(err, 'System error')
-            }
-            // Display the department table to the user in the terminal
+          db.query('SELECT * FROM department;', (err, result) => {
+            if (err) console.log(err, 'System error')
             console.table(result)
             init();
           });
@@ -60,17 +57,13 @@ function init() {
           // first names, last names, job titles, departments, salaries, and 
           // managers that the employees report to
         case 'View all employees':
-          db.query('', (err, result) => {
-            if (err) {
-              console.log(err, 'System error')
-            }
+          db.query('SELECT * FROM employee', (err, result) => {
+            if (err) console.log(err, 'System error')
+            console.table(result)
+            console.log("What would you like to do?")
+            init();
           });
-          console.table(result)
-          console.log("What would you like to do?")
-          init();
           break;
-          // WHEN I choose to add a department
-          // THEN I am prompted to enter the name of the department and that department is added to the database
         case 'Add a department':
           addDepartment();
           break;
@@ -83,41 +76,14 @@ function init() {
         case 'Update an Employee role':
           updateEmployee();
           break;
-        // case 'Quit application':
-        //   console.log('Exiting application...');
-        //   const prompt = inquirer.prompt({
-          //     input: 'input',
-          //     name: 'quitApp'
-          //   });
-          //   prompt.ui.close();
-          //   break;
-          default:
-            console.log('System error');
+        default:
+          console.log('System error');
       }
     }).catch((err) => console.error(err));
 }
-// When the 'Add a department' choice is selected, prompt the user to enter name of department:
-  function addDepartment() {
-    inquirer
-    .prompt({
-      type: 'input',
-      name: 'departmentName',
-      message: 'Enter the name of the department',
-    })
-    .then((response) => {
-      db.query(
-      `INSERT INTO department (name)
-       VALUES ('${response.departmentName}');`)
-       console.log(`Added ${response.departmentName} to the database`)
-       console.log("What would you like to do?")
-       init();
-    })
-    .catch((err) => console.error(err));
-  };
 
-  function addEmployee() {
 
-  };
+  
 
 // Invoke the init() function upon startup
 init();
