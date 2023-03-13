@@ -100,10 +100,12 @@ function init() {
         ])
           .then((response) => {
             db.query(
-            `INSERT INTO role (title, salary, department_id) VALUES (${response.roleName}, ${response.roleSalary}, ${response.roleDepartment});`)
+            `INSERT INTO role (title, salary, department_id) VALUES ('${response.roleName}', ${response.roleSalary}, ${response.roleDepartment});`)
+
             console.log('Added new role to the database.')
-          }
-        )
+            console.table(response);
+            init();
+          });
           break;
         case 'Add an employee':
           addEmployee();
@@ -116,6 +118,34 @@ function init() {
       }
     }).catch((err) => console.error(err));
 }
+
+  function addEmployee() {
+    inquirer
+    .prompt([
+      {
+      type: 'input',
+      name: 'firstName',
+      message: 'What is the employees first name?',
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: 'What is the employees last name?',
+    }
+  ])
+  .then((response) => {
+    inquirer.prompt(
+      {
+        type: 'list',
+        name: 'choiceName',
+        message: 'Who is the employees manager?',
+        choices: ['Matt Nguyen', 'John Doe']
+      }
+    )
+    return response;
+  })
+  .then((response) => console.log(response));
+  };
 
 // Invoke the init() function upon startup
 init();
