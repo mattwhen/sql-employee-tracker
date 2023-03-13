@@ -1,7 +1,8 @@
 const mysql = require("mysql2");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
-const addRole = require('./prompt');
+// const { addDepartment, addRole, addEmployee, updateEmployee } = require('./prompt');
+
 // Create a connection to database
 const db = mysql.createConnection(
   {
@@ -28,10 +29,7 @@ function init() {
       choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Quit application"],
     })
     .then((res) => {
-      // think about a swich statment to check against all the options
-      console.log(res.options);
-
-      // Do a query based on the user selection
+      // Do a query based on the user selection using a series of switch statements
       switch(res.options) {
         case 'View all departments':
           db.query('SELECT * FROM department;', (err, result) => {
@@ -65,10 +63,47 @@ function init() {
           });
           break;
         case 'Add a department':
-          addDepartment();
+          inquirer
+          .prompt({
+            type: 'input',
+            name: 'departmentName',
+            message: 'What is the name of the department?',
+          })
+          .then((response) => {
+            db.query(
+            `INSERT INTO department (name)
+             VALUES ('${response.departmentName}');`)
+             console.log(`Added ${response.departmentName} to the database`)
+             console.log("What would you like to do?")
+             init();
+          })
+          .catch((err) => console.error(err));
           break;
         case 'Add a role':
-          addRole();
+          inquirer
+          .prompt([
+            {
+            type: 'input',
+            name: 'roleName',
+            message: 'Enter the name of the role',
+          },
+          {
+            type: 'input',
+            name: 'roleSalary',
+            message: 'Enter the salary of the role',
+          },
+          {
+            type: 'input',
+            name: 'roleDepartment',
+            message: 'Enter the department ID',
+          }
+        ])
+          .then((response) => {
+            db.query(
+            `INSERT INTO role (title, salary, department_id) VALUES (${response.roleName}, ${response.roleSalary}, ${response.roleDepartment});`)
+            console.log('Added new role to the database.')
+          }
+        )
           break;
         case 'Add an employee':
           addEmployee();
@@ -82,9 +117,7 @@ function init() {
     }).catch((err) => console.error(err));
 }
 
-
-  
-
 // Invoke the init() function upon startup
 init();
 
+// module.exports = { db };
