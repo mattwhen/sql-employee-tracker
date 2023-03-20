@@ -36,5 +36,5 @@ One of the future implementations I would love to add is to make the queries asy
 
 
 
-Live demo
-![live demo]()
+## Live demo
+![live demo](./assets/sql-employee-tracker-demo.gif)
