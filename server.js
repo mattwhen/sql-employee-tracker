@@ -26,7 +26,7 @@ function init() {
       type: "list",
       name: "options",
       message: "help",
-      choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Quit application"],
+      choices: ["View all departments", "View all roles", "View all employees", "Add a department", "Add a role", "Add an employee", "Update an employee role", "Quit"],
     })
     .then((res) => {
       // Do a query based on the user selection using a series of switch statements
@@ -80,32 +80,7 @@ function init() {
           .catch((err) => console.error(err));
           break;
         case 'Add a role':
-          inquirer
-          .prompt([
-            {
-            type: 'input',
-            name: 'roleName',
-            message: 'Enter the name of the role',
-          },
-          {
-            type: 'input',
-            name: 'roleSalary',
-            message: 'Enter the salary of the role',
-          },
-          {
-            type: 'input',
-            name: 'roleDepartment',
-            message: 'Enter the department ID',
-          }
-        ])
-          .then((response) => {
-            db.query(
-            `INSERT INTO role (title, salary, department_id) VALUES ('${response.roleName}', ${response.roleSalary}, ${response.roleDepartment});`)
-
-            console.log('Added new role to the database.')
-            console.table(response);
-            init();
-          });
+          addRole();
           break;
         case 'Add an employee':
           addEmployee();
@@ -113,11 +88,45 @@ function init() {
         case 'Update an Employee role':
           updateEmployee();
           break;
-        default:
-          console.log('System error');
+        case 'Quit':
+          db.end();
+          console.log('Goodbye');
       }
     }).catch((err) => console.error(err));
 }
+
+  function addRole() {
+    inquirer
+    .prompt([
+      {
+      type: 'input',
+      name: 'roleName',
+      message: 'Enter the name of the role',
+    },
+    {
+      type: 'input',
+      name: 'roleSalary',
+      message: 'Enter the salary of the role',
+    },
+    {
+      type: 'input',
+      name: 'roleDepartment',
+      message: 'Enter the department ID',
+    }
+  ])
+    .then((response) => {
+      console.log(response);
+      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${response.roleName}', ${response.roleSalary}, ${response.roleDepartment})`, (err, result) => {
+        if (err) console.log(err, 'System error')
+        console.table(result)
+        init();
+      })
+
+      console.log('Added new role to the database.')
+      console.table(response);
+      init();
+    });
+  };
 
   function addEmployee() {
     inquirer
@@ -131,21 +140,16 @@ function init() {
       type: 'input',
       name: 'lastName',
       message: 'What is the employees last name?',
+    },
+    {
+      type: 'list',
+      name: 'choiceName',
+      message: 'Who is the employees manager?',
+      choices: ['Matt Nguyen', 'John Doe']
     }
   ])
-  .then((response) => {
-    inquirer.prompt(
-      {
-        type: 'list',
-        name: 'choiceName',
-        message: 'Who is the employees manager?',
-        choices: ['Matt Nguyen', 'John Doe']
-      }
-    )
-    return response;
-  })
-  .then((response) => console.log(response));
-  };
+  .catch((err) => console.error('System error', err));
+  }
 
 // Invoke the init() function upon startup
 init();
