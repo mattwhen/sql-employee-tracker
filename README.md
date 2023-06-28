@@ -37,4 +37,4 @@ One of the future implementations I would love to add is to make the queries asy
 
 
 ## Live demo
-![live demo](./assets/sql-employee-tracker-demo.gif)
+![live demo](https://drive.google.com/file/d/1tPzJ1PTUo6fgV5Ldro62vHe4wjykYvxS/view?usp=sharing)
